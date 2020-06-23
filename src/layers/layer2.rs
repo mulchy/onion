@@ -3,7 +3,7 @@ use anyhow::Result;
 use super::super::ascii85::decode;
 
 pub fn flip_every_other_bit(n: u8) -> u8 {
-    let mask = 0b01010101;
+    let mask = 0b0101_0101;
     n ^ mask
 }
 
@@ -14,8 +14,8 @@ pub fn rotate_right(n: u8) -> u8 {
 
 #[test]
 fn test_flip_every_other_bit() {
-    let input = 0b10101010;
-    let expected = 0b11111111;
+    let input = 0b1010_1010;
+    let expected = 0b1111_1111;
     assert_eq!(flip_every_other_bit(input), expected);
     assert_eq!(0b0000_0000, flip_every_other_bit(0b0101_0101));
     assert_eq!(0b0101_0101, flip_every_other_bit(0b0000_0000));

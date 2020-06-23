@@ -24,7 +24,7 @@ pub fn decode(bytes: &[u8]) -> Result<Vec<u8>> {
     );
 
     // silently ignore all whitespace in the encoded data
-    buffer.retain(|byte| !byte.is_ascii_whitespace()); 
+    buffer.retain(|byte| !byte.is_ascii_whitespace());
 
     let mut decoded: Vec<u8>;
     let iterator = buffer.chunks_exact(5);
@@ -35,7 +35,7 @@ pub fn decode(bytes: &[u8]) -> Result<Vec<u8>> {
     let pad = 5 - rem.len();
     if pad > 0 {
         for _ in 0..pad {
-            rem.push('u' as u8);
+            rem.push(b'u');
         }
         let mut last = decode_chunk(rem.as_mut());
         last = last.into_iter().take(5 - pad).collect();
@@ -63,14 +63,9 @@ fn trim_start_and_end_delimeters(bytes: &[u8]) -> Result<Vec<u8>> {
         }
     }
 
-    let start = start.ok_or(Error::new(
-        InvalidInput,
-        "missing Ascii85 start delimiter '<~",
-    ))?;
-    let end = end.ok_or(Error::new(
-        InvalidInput,
-        "missing Ascii85 end delimeter '~>",
-    ))?;
+    let start =
+        start.ok_or_else(|| Error::new(InvalidInput, "missing Ascii85 start delimiter '<~"))?;
+    let end = end.ok_or_else(|| Error::new(InvalidInput, "missing Ascii85 end delimeter '~>"))?;
 
     Ok(bytes[start..end].to_vec())
 }
@@ -96,9 +91,7 @@ fn decode_chunk(chunk: &[u8]) -> Vec<u8> {
     let third_byte = (input >> 8 & 0xff) as u8;
     let fourth_byte = (input & 0xff) as u8;
 
-    let result = [first_byte, second_byte, third_byte, fourth_byte].to_vec();
-
-    result
+    [first_byte, second_byte, third_byte, fourth_byte].to_vec()
 }
 
 #[test]
