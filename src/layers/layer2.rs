@@ -28,11 +28,6 @@ fn test_rotate_right() {
     assert_eq!(0b1000_1000, rotate_right(0b0001_0001));
 }
 
-pub fn find_input(haystack: &str) -> Option<Vec<u8>> {
-    let needle = "==[ Payload ]===============================================";
-    haystack.find(needle).map(|idx| haystack[idx..].trim().as_bytes().to_vec())
-}
-
 pub fn run(input: &[u8]) -> Result<Vec<u8>> {
     let decoded = decode(input)?;
     Ok(decoded
