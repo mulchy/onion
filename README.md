@@ -1,6 +1,10 @@
 # [Tom's Data Onion](https://www.tomdalling.com/toms-data-onion/) in Rust
 
+```bash
+cargo run && less ./out/*.txt
+```
 
+<pre>
          $$$$$$$$\                    $$\
          \__$$  __|                   $  |
             $$ | $$$$$$\  $$$$$$\$$$$\\_/$$$$$$$\
@@ -51,4 +55,6 @@
         >>> A PROGRAMMING PUZZLE IN A TEXT FILE <<<
                         Version 1.0
                       by @tom_dalling
-          https://tomdalling.com/toms-data-onion/
+          https://tomdalling.com/toms-data-onion
+          
+</pre>
