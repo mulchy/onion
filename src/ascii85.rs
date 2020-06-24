@@ -31,15 +31,26 @@ pub fn decode(bytes: &[u8]) -> Result<Vec<u8>> {
     decoded = iterator.clone().map(decode_chunk).flatten().collect();
 
     // handle the last chunk
-    let mut rem = iterator.remainder().to_vec();
+    let remainder = iterator.remainder();
+
+    let mut rem = remainder.to_vec();
     let pad = 5 - rem.len();
-    if pad > 0 {
+
+    if !rem.is_empty() {
         for _ in 0..pad {
             rem.push(b'u');
         }
+
+        ensure!(
+            rem.len() == 5,
+            "last block of ascii85 data was incorrectly padded. this is a bug. len={}",
+            rem.len()
+        );
+
         let mut last = decode_chunk(rem.as_mut());
-        last = last.into_iter().take(5 - pad).collect();
-        decoded.append(&mut last);
+
+        last.drain(last.len() - pad..).for_each(drop);
+        decoded.extend_from_slice(&last);
     }
 
     Ok(decoded)
@@ -59,7 +70,7 @@ fn trim_start_and_end_delimeters(bytes: &[u8]) -> Result<Vec<u8>> {
         }
 
         if first == 126 && second == 62 {
-            end = Some(i - 1);
+            end = Some(i);
         }
     }
 
@@ -71,7 +82,11 @@ fn trim_start_and_end_delimeters(bytes: &[u8]) -> Result<Vec<u8>> {
 }
 
 fn decode_chunk(chunk: &[u8]) -> Vec<u8> {
-    assert!(chunk.len() == 5); // idris when
+    assert!(
+        chunk.len() == 5,
+        "The ascii85 block had invalid length, {}. This is a bug.",
+        chunk.len()
+    ); // idris when
 
     let base: u64 = 85;
     let digit1 = (chunk[0] - 33) as u64;
