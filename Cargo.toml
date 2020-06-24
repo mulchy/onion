@@ -8,3 +8,4 @@ edition = "2018"
 
 [dependencies]
 anyhow = "1.0.31"
+openssl = "0.10.29" # needed for unwrap key, there is probably a better crate that is not just calling openssl
